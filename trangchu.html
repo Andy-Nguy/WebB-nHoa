@@ -8,6 +8,16 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
+        .images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+        .images img {
+            max-width: 100px;
+            height: auto;
+            object-fit: cover;
+        }
         .items {
             list-style: none;
             padding: 0;
@@ -685,7 +695,7 @@
             if (existingItemIndex !== -1) {
                 cart[existingItemIndex].quantity += 1;
             } else {
-                cart.push({ name: name, price: price, quantity: 1 });
+                cart.push({ name: name, price: price, quantity: 1,images: item.images || [] });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
@@ -738,12 +748,47 @@
             if (existingItemIndex !== -1) {
                 cart[existingItemIndex].quantity += 1;
             } else {
-                cart.push({ name: comboName, price: price, quantity: 1 });
+                const comboItems = items.split(', ').map(item => item.trim());
+                console.log('Combo items:', comboItems);
+                const comboImages = comboItems.map(item => {
+                    const flower = getFlowerDetails(item);
+                    return flower ? flower.image : '/static/image/placeholder.jpg';
+                });
+                console.log('Combo images:', comboImages);
+                cart.push({
+                    name: comboName,
+                    price: price,
+                    quantity: 1,
+                    images: comboImages
+                });
             }
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
             window.location.href = './page/giohang.html';
         }
+        function getFlowerDetails(flowerName) {
+            const normalizedName = flowerName.trim().toLowerCase();
+            const flower = flowers.find(f => f.name.trim().toLowerCase() === normalizedName);
+            console.log(`getFlowerDetails: Searching for "${flowerName}" (normalized: "${normalizedName}"), Found:`, flower);
+            return flower;
+        }
+        const flowers = [
+            { name: "Hoa Cưới Cầm Tay Dáng Tròn", price: 450000, image: "/image/hoa cuoi dang tron 1.jpg" },
+            { name: "Hoa Khai Trương Hồng Phát", price: 800000, image: "/image/hoa khai truong hong phat 1.jpg" },
+            { name: "Hoa Hồng", price: 229000, image: "/image/hoa hong.jpg" },
+            { name: "Hoa Tulip", price: 1000000, image: "/image/hoa tulip.jpg" },
+            { name: "Hoa Sinh Nhật Dạng Hộp Mica", price: 1200000, image: "/image/vali gio hoa sn dang hop.jpg" },
+            { name: "Hoa Cẩm Chướng", price: 269000, image: "/image/hoa cam chuong.jpg" },
+            { name: "Hoa Đồng Tiền", price: 479000, image: "/image/hoa dong tien.jpg" },
+            { name: "Hoa Sinh Nhật Dạng Hộp Giấy", price: 545000, image: "/image/hoa sinh nhat dang hop giay.jpg" },
+            { name: "Hoa Cưới Buộc Lơi Tự Nhiên", price: 450000, image: "/image/hoa cuoi buoc loi.png" },
+            { name: "Hoa Cưới Cầm Tay Dạng Thác Nước", price: 799000, image: "/image/hoa cuoi thac do.jpg" },
+            { name: "Hoa Sinh Nhật Dạng Bó", price: 510000, image: "/image/hoa sinh nhat dang bo.jpg" },
+            { name: "Hoa Sinh Nhật Dạng Túi Mica", price: 999000, image: "/image/vali gio hoa sn dang tui deo.jpg" },
+            { name: "Hoa Khai Trương Nhiệt Huyết", price: 850000, image: "/image/hoa khai truong nhiet huyet.jpg" },
+            { name: "Hoa Cưới Cầm Tay Dáng Dài", price: 549000, image: "/image/hoa cuoi dang dai.jpg" },
+            { name: "Hoa Khai Trương Cát Tường", price: 800000, image: "/image/hoa khai truong cat tuong.jpg" }
+        ];
 
         // Initialize page
         window.onload = function() {

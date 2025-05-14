@@ -301,74 +301,87 @@
             updateCartDisplay();
         }
 
-        function updateCartDisplay() {
-            var cart = JSON.parse(localStorage.getItem('cart')) || [];
-            var cartItemsContainer = document.getElementById('cart-items');
-            var cartCount = document.getElementById('cart-count');
-            var checkoutButton = document.getElementById('checkout-button');
+function updateCartDisplay() {
+    var cart = JSON.parse(localStorage.getItem('cart')) || [];
+    var cartItemsContainer = document.getElementById('cart-items');
+    var cartCount = document.getElementById('cart-count');
+    var checkoutButton = document.getElementById('checkout-button');
 
-            // Xử lý khi giỏ hàng trống
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p>Giỏ hàng của bạn đang trống.</p>';
-                cartCount.textContent = '0';
-                checkoutButton.textContent = 'Vui lòng thêm sản phẩm vào giỏ hàng';
-                checkoutButton.classList.remove('btn-success');
-                checkoutButton.classList.add('btn-secondary');
-                document.getElementById('continue-shopping').style.display = 'none';
-                
-                // Xóa tất cả container gợi ý
-                document.querySelectorAll('[id^="substitute-"]').forEach(container => {
-                    container.innerHTML = '';
-                });
-                
-                // Reload trang nếu cờ cartCleared được đặt
-                if (localStorage.getItem('cartCleared') === 'true') {
-                    localStorage.removeItem('cartCleared'); // Xóa cờ để tránh lặp
-                    window.location.reload();
-                }
-                return;
-            }
+    // Debug: Log cart
+    console.log('Cart contents:', JSON.stringify(cart, null, 2));
 
-            let total = 0;
-            cartItemsContainer.innerHTML = '';
-            cart.forEach((item, index) => {
-                total += item.price * item.quantity;
-                const cartItem = document.createElement('div');
-                cartItem.className = 'cart-item';
-                cartItem.innerHTML = `
-                    <div class="card mb-3">
-                        <div class="row g-0">
-                            <div class="col-md-4">
-                                <img src="${getFlowerDetails(item.name).image || ''}" class="img-fluid rounded-start" alt="${item.name}">
+    // Xử lý khi giỏ hàng trống
+    if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '<p>Giỏ hàng của bạn đang trống.</p>';
+        cartCount.textContent = '0';
+        checkoutButton.textContent = 'Vui lòng thêm sản phẩm vào giỏ hàng';
+        checkoutButton.classList.remove('btn-success');
+        checkoutButton.classList.add('btn-secondary');
+        document.getElementById('continue-shopping').style.display = 'none';
+        
+        // Xóa tất cả container gợi ý
+        document.querySelectorAll('[id^="substitute-"]').forEach(container => {
+            container.innerHTML = '';
+        });
+        
+        // Reload trang nếu cờ cartCleared được đặt
+        if (localStorage.getItem('cartCleared') === 'true') {
+            localStorage.removeItem('cartCleared');
+            window.location.reload();
+        }
+        return;
+    }
+
+    let total = 0;
+    cartItemsContainer.innerHTML = '';
+    cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+
+        // Debug: Log ảnh
+        const defaultImage = getFlowerDetails(item.name)?.image || '/static/image/placeholder.jpg';
+        console.log(`Item: ${item.name}, Images:`, item.images, `Default image:`, defaultImage);
+
+        const cartItem = document.createElement('div');
+        cartItem.className = 'cart-item';
+        // Hiển thị ảnh giống loadCombos
+        const imagesHtml = item.images && item.images.length > 0 
+            ? `<div class="images">${item.images.map(img => `<img src="${img}" alt="Combo Image">`).join('')}</div>`
+            : `<img src="${defaultImage}" alt="${item.name}">`;
+        
+        cartItem.innerHTML = `
+            <div class="card mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        ${imagesHtml}
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body d-flex flex-column justify-content-between">
+                            <div>
+                                <h5 class="card-title" style="font-size: 1.8rem">${item.name}</h5>
+                                <p class="card-text" style="font-size: 1rem">Giá: ${(item.price * item.quantity).toLocaleString()} VND</p>
                             </div>
-                            <div class="col-md-8">
-                                <div class="card-body d-flex flex-column justify-content-between">
-                                    <div>
-                                        <h5 class="card-title" style="font-size: 1.8rem">${item.name}</h5>
-                                        <p class="card-text" style="font-size: 1rem">Giá: ${(item.price * item.quantity).toLocaleString()} VND</p>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(${index}, -1)">-</button>
-                                        <input type="text" class="form-control text-center" value="${item.quantity}" readonly>
-                                        <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(${index}, 1)">+</button>
-                                        <button class="btn btn-danger ms-3" type="button" onclick="removeItem(${index})">Xóa</button>
-                                    </div>
-                                </div>
+                            <div class="input-group mb-3">
+                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(${index}, -1)">-</button>
+                                <input type="text" class="form-control text-center" value="${item.quantity}" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity(${index}, 1)">+</button>
+                                <button class="btn btn-danger ms-3" type="button" onclick="removeItem(${index})">Xóa</button>
                             </div>
                         </div>
                     </div>
-                `;
-                cartItemsContainer.appendChild(cartItem);
-            });
+                </div>
+            </div>
+        `;
+        cartItemsContainer.appendChild(cartItem);
+    });
 
-            const totalPrice = document.createElement('p');
-            totalPrice.className = 'total-price';
-            totalPrice.innerHTML = `<strong>Tổng cộng: ${total.toLocaleString()} VND</strong>`;
-            cartItemsContainer.appendChild(totalPrice);
+    const totalPrice = document.createElement('p');
+    totalPrice.className = 'total-price';
+    totalPrice.innerHTML = `<strong>Tổng cộng: ${total.toLocaleString()} VND</strong>`;
+    cartItemsContainer.appendChild(totalPrice);
 
-            cartCount.textContent = cart.reduce((count, item) => count + item.quantity, 0);
-            document.getElementById('continue-shopping').style.display = 'inline-block';
-        }
+    cartCount.textContent = cart.reduce((count, item) => count + item.quantity, 0);
+    document.getElementById('continue-shopping').style.display = 'inline-block';
+}
 
         function updateQuantity(index, change) {
             var cart = JSON.parse(localStorage.getItem('cart')) || [];
