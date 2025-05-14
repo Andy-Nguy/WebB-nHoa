@@ -102,6 +102,7 @@
             border-radius: 8px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+        
         @media (max-width: 640px) {
             .combo-card {
                 flex-direction: column;
@@ -201,31 +202,31 @@
         <ul class="items">
             <li>
                 <a href="trangchu.html#hoaspnb" title="Sản Phẩm Nổi Bật">
-                    <img src="https://cdn.hoayeuthuong.com/images/icon-hoa-tinh-yeu.png" alt="Sản Phẩm Nổi Bật">
+                    <img src="https://vn1.vdrive.vn/alohamedia.vn/2025/02/e4a2491bb9f1ce1d4c52eaf5ebc4eabc.jpg" alt="Sản Phẩm Nổi Bật">
                 </a>
                 <a href="trangchu.html#hoaspnb" title="Sản Phẩm Nổi Bật">Sản Phẩm Nổi Bật</a>
             </li>
             <li>
                 <a href="trangchu.html#hoaspgg" title="Sản Phẩm Giảm Giá">
-                    <img src="https://cdn.hoayeuthuong.com/hinh-hoa-tuoi/hoa-khuyen-mai/14689_thuan-khiet.jpg" alt="Sản Phẩm Giảm Giá">
+                    <img src="https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/03/anh-hoa-Tulip-60.jpg" alt="Sản Phẩm Giảm Giá">
                 </a>
                 <a href="trangchu.html#hoaspgg" title="Sản Phẩm Giảm Giá">Sản Phẩm Giảm Giá</a>
             </li>
             <li>
                 <a href="trangchu.html#hoacuoi" title="Hoa Cưới">
-                    <img src="https://cdn.hoayeuthuong.com/hinh-hoa-tuoi/mau-hoa-moi/13302_gam-hoa.jpg" alt="Hoa Cưới">
+                    <img src="https://tophinhanh.net/wp-content/uploads/2023/10/anh-hoa-tulip-1.jpg" alt="Hoa Cưới">
                 </a>
                 <a href="trangchu.html#hoacuoi" title="Hoa Cưới">Hoa Cưới</a>
             </li>
             <li>
                 <a href="trangchu.html#hoasn" title="Hoa Sinh Nhật">
-                    <img src="https://cdn.hoayeuthuong.com/hinh-hoa-tuoi/thumb/hoa-sinh-nhat/13256_ang-may-hong.jpg" alt="Hoa Sinh Nhật">
+                    <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/01/hinh-nen-hoa-hong-4.jpg" alt="Hoa Sinh Nhật">
                 </a>
                 <a href="trangchu.html#hoasn" title="Hoa Sinh Nhật">Hoa Sinh Nhật</a>
             </li>
             <li>
                 <a href="trangchu.html#hoakt" title="Hoa Khai Trương">
-                    <img src="https://cdn.hoayeuthuong.com/images/icon-hoa-chuc-mung.png" alt="Hoa Khai Trương">
+                    <img src="https://mega.com.vn/media/news/0511_Hnhnnhoahngscnt.jpg" alt="Hoa Khai Trương">
                 </a>
                 <a href="trangchu.html#hoakt" title="Hoa Khai Trương">Hoa Khai Trương</a>
             </li>
@@ -717,18 +718,16 @@
                     combosContainer.innerHTML = ''; // Clear previous content
                     combos.forEach(combo => {
                         const comboCard = document.createElement('div');
-                        comboCard.className = 'col';
+                        comboCard.className = 'combo-card mb-3 w-100'; // mỗi combo 1 dòng
                         comboCard.innerHTML = `
-                            <div class="combo-card">
-                                <div class="content">
-                                    <h3 class="text-lg font-semibold">${combo.items.join(' + ')}</h3>
-                                    <p class="text-gray-600">Giá gốc: ${combo.original_price.toLocaleString()} VNĐ</p>
-                                    <p class="text-red-600 font-bold">Giá khuyến mãi: ${combo.discounted_price.toLocaleString()} VNĐ</p>
-                                    <button class="btn btn-success mt-2" onclick="addComboToCart('${combo.items.join(', ')}', ${combo.discounted_price})">Mua Ngay</button>
-                                </div>
-                                <div class="images">
-                                    ${combo.images.map(img => `<img src="${img}" alt="Combo Image">`).join('')}
-                                </div>
+                            <div class="content">
+                                <h3 class="text-lg font-semibold">${combo.items.join(' + ')}</h3>
+                                <p class="text-gray-600">Giá gốc: ${combo.original_price.toLocaleString()} VNĐ</p>
+                                <p class="text-red-600 font-bold">Giá khuyến mãi: ${combo.discounted_price.toLocaleString()} VNĐ</p>
+                                <button class="btn btn-success mt-2" onclick="addComboToCart('${combo.items.join(', ')}', ${combo.discounted_price})">Mua Ngay</button>
+                            </div>
+                            <div class="images">
+                                ${combo.images.map(img => `<img src="${img}" alt="Combo Image">`).join('')}
                             </div>
                         `;
                         combosContainer.appendChild(comboCard);
